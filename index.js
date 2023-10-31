@@ -66,7 +66,7 @@ async function saveLatest() {
 async function appendFile(prefix, data) {
   let contents = {};
   try {
-    contents = await readFile(makeFilePath(prefix));
+    contents = JSON.parse(await readFile(makeFilePath(prefix)));
   } catch(e) {
   }
   const nextContents = {
@@ -80,8 +80,11 @@ async function appendFile(prefix, data) {
 }
 
 let { latestRound, latestApp } = await loadLatest();
+
 console.log('Starting with', { latestRound, latestApp });
+
 let lastNumberOfApps = 1;
+let totalApps = 0;
 
 async function fetchApps(next, limit = 5_000, tries = 0) {
   try {
@@ -121,15 +124,17 @@ async function processApps(applications) {
 }
 
 async function step() {
+  console.time('Fetch');
   const { applications, "next-token": next, "current-round": nextLatestRound, ...r } = await fetchApps(latestApp);
+  console.timeEnd('Fetch');
 
   latestRound = nextLatestRound;
   latestApp = next ? parseInt(next) : latestApp;
-  debugger;
 
   lastNumberOfApps = applications.length;
+  totalApps += applications.length;
 
-  console.log('Fetched', { latestRound, latestApp, lastNumberOfApps });
+  console.log('Fetched', { r: latestRound, lastApp: latestApp, lastGot: lastNumberOfApps, tot: totalApps });
   await Promise.all([
     processApps(applications),
   ]);
