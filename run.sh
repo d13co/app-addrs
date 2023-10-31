@@ -15,6 +15,6 @@ git commit -am "data $(date --utc)"
 
 git push
 
-git gc --aggressive
+git gc
 
 git prune
