@@ -2,6 +2,8 @@
 
 cd "$(realpath $(dirname $0))"
 
+echo Started $(date)
+
 git pull -X theirs
 
 # NETWORK=voitestnet node index.js
@@ -15,6 +17,10 @@ git commit -am "data $(date --utc)"
 
 git push
 
-git gc
+if [ "$1" == "gc" ]; then
+	git gc
 
-git prune
+	git prune
+fi
+
+echo Finished $(date)
