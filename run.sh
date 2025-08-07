@@ -4,7 +4,7 @@ cd "$(realpath $(dirname $0))"
 
 echo Started $(date)
 
-git pull -X theirs
+./pull.sh
 
 # NETWORK=voitestnet node index.js
 NETWORK=betanet node index.js
